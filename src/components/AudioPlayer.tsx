@@ -26,23 +26,27 @@ export const AudioPlayer = ({ intensity }: { intensity: number }) => {
   // 🔹 Initialize sound
   useEffect(() => {
     const sound = new Howl({
-      // Reference your uploaded file here
       src: ['/bg.mp3'], 
       loop: true,
       volume: 0.7,
       html5: true,
       preload: true,
+      onload: () => {
+        console.log("Audio successfully loaded from /bg.mp3");
+      },
       onloaderror: (id, err) => {
-        console.warn("Local bg.mp3 not found, using fallback sci-fi ambient.");
-        // Fallback to a working URL if the local file isn't uploaded yet
-        soundRef.current?.unload();
-        const fallback = new Howl({
-          src: ['https://cdn.pixabay.com/audio/2022/03/10/audio_c8c88686a3.mp3'],
-          loop: true,
-          volume: 0.5,
-          html5: true
-        });
-        soundRef.current = fallback;
+        console.warn("Local bg.mp3 not found or failed to load, trying fallback.", err);
+        if (soundRef.current) {
+          soundRef.current.unload();
+          const fallback = new Howl({
+            src: ['https://assets.mixkit.co/music/preview/mixkit-cinematic-mystery-dark-ambient-2.mp3'],
+            loop: true,
+            volume: 0.5,
+            html5: true,
+            onload: () => console.log("Fallback audio loaded")
+          });
+          soundRef.current = fallback;
+        }
       }
     });
 

@@ -1,9 +1,19 @@
 import { GoogleGenAI } from "@google/genai";
 import { PredictionResponse } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
+const GEMINI_KEY = process.env.GEMINI_API_KEY;
+const ai = GEMINI_KEY ? new GoogleGenAI({ apiKey: GEMINI_KEY }) : null;
 
 export async function getFuturePrediction(answers: string[]): Promise<PredictionResponse> {
+  if (!ai) {
+    console.error("Gemini API Key is missing. Please set it in the Secrets panel.");
+    return {
+      scenario: "Wait! The temporal sensors detect a missing authentication key. Please add your GEMINI_API_KEY to the Secrets panel to unlock this vision.",
+      impactScore: 0,
+      tags: ["Auth Required", "Secret Missing", "Incomplete"]
+    };
+  }
+
   const prompt = `Based on these user preferences about the future:
 1. Economic outlook: ${answers[0]}
 2. Technology trust: ${answers[1]}
@@ -22,7 +32,8 @@ Return ONLY a JSON object with: { "scenario": "...", "impactScore": 85, "tags": 
       }
     });
 
-    return JSON.parse(response.text || '{}');
+    const text = response.response.text();
+    return JSON.parse(text || '{}');
   } catch (error) {
     console.error("AI Prediction failed:", error);
     return {
