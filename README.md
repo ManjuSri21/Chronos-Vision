@@ -1,20 +1,34 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Chronos: Vision 2050
 
-# Run and deploy your AI Studio app
+An immersive, scroll-based sci-fi journey through the future of humanity, featuring 3D visuals and AI predictions.
 
-This contains everything you need to run your app locally.
+## Tech Stack
 
-View your app in AI Studio: https://ai.studio/apps/d7ad1ea9-7379-48fe-b87d-2d47d1bfcdd8
+- **React 19** with TypeScript
+- **Vite** for build tooling
+- **Three.js / React Three Fiber** for 3D globe visualization
+- **Tailwind CSS** for styling
+- **Chart.js** for data visualization
+- **Google Gemini API** for AI-powered predictions
 
-## Run Locally
+## Getting Started
 
-**Prerequisites:**  Node.js
+```bash
+# Install dependencies
+npm install
 
+# Start development server
+npm run dev
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+# Build for production
+npm run build
+```
+
+## Features
+
+- Interactive 3D globe with rotating Earth
+- Scroll-driven animations and transitions
+- AI-generated future predictions via Gemini
+- Ambient audio atmosphere
+- Responsive sci-fi themed UI
+
