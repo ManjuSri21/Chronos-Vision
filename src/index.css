@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@300;500&family=Space+Grotesk:wght@300;500;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-neon-cyan: #22d3ee;
+  --color-neon-purple: #a855f7;
+  --color-neon-blue: #3b82f6;
+  --color-deep-space: #020617;
+  --color-slate-card: rgba(15, 23, 42, 0.6);
+}
+
+@layer base {
+  body {
+    @apply bg-deep-space text-slate-200 overflow-x-hidden antialiased selection:bg-neon-cyan/30;
+    font-feature-settings: "ss01", "ss02", "cv01";
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-neon-cyan/20 hover:bg-neon-cyan/40 transition-colors;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-slate-card backdrop-blur-xl border border-white/10 rounded-2xl;
+  }
+  
+  .glass {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+  }
+
+  .neon-glow {
+    text-shadow: 0 0 10px rgba(34, 211, 238, 0.5), 0 0 20px rgba(168, 85, 247, 0.3);
+  }
+
+  .neon-border-cyan {
+    @apply border-cyan-400/30;
+    box-shadow: 0 0 15px rgba(34, 211, 238, 0.2), inset 0 0 5px rgba(34, 211, 238, 0.1);
+  }
+
+  .mono {
+    @apply font-mono uppercase tracking-widest;
+  }
+}
+
+.timeline-gradient {
+  background: linear-gradient(to bottom, var(--color-neon-blue), var(--color-neon-cyan), var(--color-neon-purple));
+}
+
+.stars-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  background: radial-gradient(circle at 50% 50%, #0a0a20 0%, #020617 100%);
+}
+
+.orbit {
+  border: 1px solid rgba(34, 211, 238, 0.1);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
