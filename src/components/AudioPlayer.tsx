@@ -42,8 +42,10 @@ export const AudioPlayer = ({ intensity }: { intensity: number }) => {
     if (!sound) return;
 
     try {
-      // 🔥 Unlock browser audio
-      await Howler.ctx.resume();
+      // 🔥 Unlock browser audio context
+      if (Howler.ctx.state === 'suspended') {
+        await Howler.ctx.resume();
+      }
     } catch (e) {
       console.log("Audio context resume failed:", e);
     }
@@ -72,7 +74,7 @@ export const AudioPlayer = ({ intensity }: { intensity: number }) => {
             exit={{ opacity: 0, y: 10 }}
             className="px-3 py-1 bg-neon-cyan/10 border border-neon-cyan/20 rounded-md text-[10px] font-mono text-neon-cyan tracking-widest uppercase mb-2"
           >
-            Tap to Enable Sound 🔊
+            Play Soundtrack 🔊
           </motion.div>
         )}
       </AnimatePresence>
