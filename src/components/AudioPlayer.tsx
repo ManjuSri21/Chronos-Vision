@@ -7,21 +7,49 @@ export const AudioPlayer = ({ intensity }: { intensity: number }) => {
   const [isMuted, setIsMuted] = useState(true);
   const soundRef = useRef<Howl | null>(null);
 
-  // 🔹 Initialize sound once
+  // 🔥 GLOBAL AUDIO UNLOCK
+  useEffect(() => {
+    const unlock = async () => {
+      try {
+        if (Howler.ctx.state === 'suspended') {
+          await Howler.ctx.resume();
+        }
+      } catch (e) {
+        console.log("Unlock failed", e);
+      }
+    };
+
+    window.addEventListener("click", unlock, { once: true });
+    return () => window.removeEventListener("click", unlock);
+  }, []);
+
+  // 🔹 Initialize sound
   useEffect(() => {
     const sound = new Howl({
-      src: [
-        'https://cdn.pixabay.com/download/audio/2022/01/18/audio_61aadd309a.mp3?filename=ambient-scifi-12345.mp3'
-      ],
+      // Reference your uploaded file here
+      src: ['/bg.mp3'], 
       loop: true,
-      volume: 0, // start silent
+      volume: 0.7,
       html5: true,
+      preload: true,
+      onloaderror: (id, err) => {
+        console.warn("Local bg.mp3 not found, using fallback sci-fi ambient.");
+        // Fallback to a working URL if the local file isn't uploaded yet
+        soundRef.current?.unload();
+        const fallback = new Howl({
+          src: ['https://cdn.pixabay.com/audio/2022/03/10/audio_c8c88686a3.mp3'],
+          loop: true,
+          volume: 0.5,
+          html5: true
+        });
+        soundRef.current = fallback;
+      }
     });
 
     soundRef.current = sound;
 
     return () => {
-      sound.unload();
+      if (soundRef.current) soundRef.current.unload();
     };
   }, []);
 
@@ -30,10 +58,8 @@ export const AudioPlayer = ({ intensity }: { intensity: number }) => {
     const sound = soundRef.current;
     if (!sound || isMuted) return;
 
-    // safer volume scaling (0.4 → 1.0)
-    const targetVolume = Math.min(1, 0.4 + intensity * 0.6);
-
-    sound.fade(sound.volume(), targetVolume, 800);
+    const targetVolume = Math.min(1, 0.5 + intensity * 0.5);
+    sound.volume(targetVolume); 
   }, [intensity, isMuted]);
 
   // 🔹 Toggle sound
@@ -42,21 +68,18 @@ export const AudioPlayer = ({ intensity }: { intensity: number }) => {
     if (!sound) return;
 
     try {
-      // 🔥 Unlock browser audio context
       if (Howler.ctx.state === 'suspended') {
         await Howler.ctx.resume();
       }
     } catch (e) {
-      console.log("Audio context resume failed:", e);
+      console.log("Resume failed:", e);
     }
 
     if (isMuted) {
-      if (!sound.playing()) {
-        sound.play();
-      }
-      sound.fade(sound.volume(), 0.7, 800); // audible volume
+      sound.play();      
+      sound.volume(0.7);  
     } else {
-      sound.fade(sound.volume(), 0, 800);
+      sound.stop();       
     }
 
     setIsMuted(!isMuted);
@@ -65,7 +88,6 @@ export const AudioPlayer = ({ intensity }: { intensity: number }) => {
   return (
     <div className="fixed bottom-8 right-8 z-50 flex flex-col items-center gap-2">
       
-      {/* Hint Text */}
       <AnimatePresence>
         {isMuted && (
           <motion.div
@@ -74,12 +96,11 @@ export const AudioPlayer = ({ intensity }: { intensity: number }) => {
             exit={{ opacity: 0, y: 10 }}
             className="px-3 py-1 bg-neon-cyan/10 border border-neon-cyan/20 rounded-md text-[10px] font-mono text-neon-cyan tracking-widest uppercase mb-2"
           >
-            Play Soundtrack 🔊
+            Click to Enable Sound 🔊
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Button */}
       <motion.button
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
