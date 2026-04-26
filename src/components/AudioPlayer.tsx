@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'motion/react';
 export const AudioPlayer = ({ intensity }: { intensity: number }) => {
   const [isMuted, setIsMuted] = useState(true);
   const soundRef = useRef<Howl | null>(null);
+  const localBgSrc = `${import.meta.env.BASE_URL}bg.mp3`;
 
   // 🔥 GLOBAL AUDIO UNLOCK
   useEffect(() => {
@@ -26,13 +27,14 @@ export const AudioPlayer = ({ intensity }: { intensity: number }) => {
   // 🔹 Initialize sound
   useEffect(() => {
     const sound = new Howl({
-      src: ['/bg.mp3'], 
+      // Vite serves files in /public at BASE_URL (works in dev + prod subpaths)
+      src: [localBgSrc],
       loop: true,
       volume: 0.7,
       html5: true,
       preload: true,
       onload: () => {
-        console.log("Audio successfully loaded from /bg.mp3");
+        console.log(`Audio successfully loaded from ${localBgSrc}`);
       },
       onloaderror: (id, err) => {
         console.warn("Local bg.mp3 not found or failed to load, trying fallback.", err);

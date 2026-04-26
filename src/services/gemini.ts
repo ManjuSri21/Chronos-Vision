@@ -32,7 +32,17 @@ Return ONLY a JSON object with: { "scenario": "...", "impactScore": 85, "tags": 
       }
     });
 
-    const text = response.response.text();
+    // The @google/genai response shape varies by version; support both.
+    const anyResponse = response as unknown as {
+      text?: () => string;
+      response?: { text?: () => string };
+    };
+    const text =
+      typeof anyResponse.text === "function"
+        ? anyResponse.text()
+        : typeof anyResponse.response?.text === "function"
+          ? anyResponse.response.text()
+          : "";
     return JSON.parse(text || '{}');
   } catch (error) {
     console.error("AI Prediction failed:", error);
