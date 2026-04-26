@@ -1,6 +1,5 @@
 {
   "name": "Chronos: Vision 2050",
   "description": "An immersive, scroll-based sci-fi journey through the future of humanity, featuring 3D visuals and AI predictions.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["3D", "AI", "Audio"]
+  "requestFramePermissions": []
 }
